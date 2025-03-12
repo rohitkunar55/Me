@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
-#include <math.h> // fmod ke liye
 
 #define EXPIRATION_YEAR 2035
 #define EXPIRATION_MONTH 3
