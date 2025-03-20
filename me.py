@@ -17,7 +17,7 @@ import subprocess
 
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('7933989174:AAHmwkFg6dSGb_ILaiMFrzvrPXhWExds_qM')
+bot = telebot.TeleBot('7622141135:AAFGTRB_aPEqVtGQsd8kOBUad03msqT_qmI')
 
 # Admin user IDs
 admin_id = {"6864281179", "1456998674"}
@@ -27,7 +27,7 @@ USER_FILE = "users.json"
 LOG_FILE = "log.txt"
 KEY_FILE = "keys.json"
 RESELLERS_FILE = "resellers.json"
-BOT_LINK = "@Ishsbbebs_bot"
+BOT_LINK = "@newddosfile_bot"
 escaped_bot_link = BOT_LINK.replace('_', '\\_')
 
 # Per key cost for resellers
