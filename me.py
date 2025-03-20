@@ -39,7 +39,7 @@ keys = {}
 last_attack_time = {}
 
 # Path to the voice file (must be in the same directory as this script)
-VOICE_FILE_PATH = 'voice.mp3'
+VOICE_FILE_PATH = ''
 
 # List of blocked ports
 blocked_ports = [8700, 20000, 443, 17500, 9031, 20002, 20001, 10000, 10001, 10002]
