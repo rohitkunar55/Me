@@ -5,10 +5,12 @@ import subprocess
 import threading
 import telebot
 import datetime
+import random
+import string
 from telebot import types
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('7622141135:AAGQNf7x1n7pkV1jmRS6xNV1PKs0NSMpPs0')
+bot = telebot.TeleBot('8173728765:AAEJIoqDMNm15xu2WbTgNrHZSDrlyAfebOo')
 
 # Admin user IDs
 admin_id = {"6864281179"}
@@ -104,6 +106,49 @@ def clear_logs():
     except FileNotFoundError:
         return "No data found."
 
+def generate_key(duration_days):
+    key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    expiration_date = (datetime.datetime.now() + datetime.timedelta(days=duration_days)).strftime('%Y-%m-%d %H:%M:%S')
+    keys[key] = expiration_date
+    save_keys()
+    return key
+
+@bot.message_handler(commands=['genkey'])
+def genkey_command(message):
+    user_id = str(message.chat.id)
+    if user_id not in admin_id:
+        bot.reply_to(message, "⚠️ Access denied: Only the bot owner can run this command.", parse_mode='Markdown')
+        return
+
+    parts = message.text.split()
+    if len(parts) != 2:
+        bot.reply_to(message, "Usage: /genkey <duration_days>", parse_mode='Markdown')
+        return
+
+    try:
+        duration_days = int(parts[1])
+        key = generate_key(duration_days)
+        bot.reply_to(message, f"✅ Key generated: `{key}` with duration: {duration_days} days", parse_mode='Markdown')
+    except ValueError:
+        bot.reply_to(message, "Please enter a valid number of days.", parse_mode='Markdown')
+
+@bot.message_handler(commands=['redeem'])
+def redeem_command(message):
+    user_id = str(message.chat.id)
+    parts = message.text.split()
+    if len(parts) != 2:
+        bot.reply_to(message, "Usage: /redeem <key>", parse_mode='Markdown')
+        return
+
+    key = parts[1]
+    if key in keys:
+        users[user_id] = keys.pop(key)
+        save_users()
+        save_keys()
+        bot.reply_to(message, f"✅ Key redeemed successfully! Access granted until {users[user_id]}.", parse_mode='Markdown')
+    else:
+        bot.reply_to(message, "❌ Invalid or expired key.", parse_mode='Markdown')
+
 @bot.message_handler(commands=['start'])
 def start_command(message):
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -121,7 +166,7 @@ def handle_attack(message):
 
     # Check if user has VIP access or temporary access
     if user_id not in users and not has_temporary_access(user_id):
-        bot.reply_to(message, "⚠️ *Please redeem a key or join the required channels to gain access.*", parse_mode='Markdown')
+        prompt_join_channels(message)
         return
 
     expiration_date = users.get(user_id, None)
@@ -140,6 +185,15 @@ def handle_attack(message):
     bot.reply_to(message, "Enter target IP, port, and duration in seconds (e.g., '192.168.1.1 80 60')", parse_mode='Markdown')
     bot.register_next_step_handler(message, process_attack_details)
 
+def prompt_join_channels(message):
+    markup = types.InlineKeyboardMarkup()
+    for channel in REQUIRED_CHANNELS:
+        button = types.InlineKeyboardButton(text=f"Join {channel}", url=channel)
+        markup.add(button)
+    verify_button = types.InlineKeyboardButton("I've Joined", callback_data="verify_channels")
+    markup.add(verify_button)
+    bot.reply_to(message, "⚠️ *Please join the following channels to gain access.*", reply_markup=markup, parse_mode='Markdown')
+
 def has_temporary_access(user_id):
     if user_id in temporary_access:
         if temporary_access[user_id] < MAX_ATTACK_USES:
@@ -148,6 +202,16 @@ def has_temporary_access(user_id):
             del temporary_access[user_id]  # Remove access after limit is reached
             save_temporary_access()
     return False
+
+@bot.callback_query_handler(func=lambda call: call.data == "verify_channels")
+def verify_channels_callback(call):
+    user_id = str(call.message.chat.id)
+    if user_id not in temporary_access:
+        temporary_access[user_id] = 0
+        save_temporary_access()
+        bot.send_message(call.message.chat.id, "✅ *You have been verified! You can now use the attack feature up to 10 times.*", parse_mode='Markdown')
+    else:
+        bot.send_message(call.message.chat.id, "⚠️ *You are already verified.*", parse_mode='Markdown')
 
 def process_attack_details(message):
     user_id = str(message.chat.id)
