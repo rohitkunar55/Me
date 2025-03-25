@@ -8,12 +8,12 @@ import datetime
 from telebot import types
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('YOUR_BOT_TOKEN')
+bot = telebot.TeleBot('7622141135:AAGQNf7x1n7pkV1jmRS6xNV1PKs0NSMpPs0')
 
 # Admin user IDs
-admin_id = {"YOUR_ADMIN_USER_ID"}
+admin_id = {"6864281179"}
 # Channel ID to send feedback screenshots
-feedback_channel_id = '@YOUR_CHANNEL_ID'  # Use the actual channel username with @ or channel ID
+feedback_channel_id = '@VOID_CHATS'  # Use the actual channel username with @ or channel ID
 
 # Files for data storage
 USER_FILE = "users.json"
@@ -30,8 +30,8 @@ temporary_access = {}
 
 # Required channels for attack verification
 REQUIRED_CHANNELS = [
-    "https://t.me/channel1",  # Replace with your actual channel links
-    "https://t.me/channel2"
+    "https://t.me/+r07ItJyMqdtkN2Y9",  # Replace with your actual channel links
+    "https://t.me/VOID_CHATS"
 ]
 
 MAX_ATTACK_USES = 10  # Maximum allowed attacks for temporary access
